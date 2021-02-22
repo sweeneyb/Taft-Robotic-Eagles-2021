@@ -19,17 +19,29 @@ import edu.wpi.first.wpilibj.Timer;
  * project.
  */
 public class Robot extends TimedRobot {
+  private static final double kAngleSetpoint = 0.0;
+	private static final double kP = 0.005; // propotional turning constant
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
    */
 
-  private Jaguar leftMotor = new Jaguar(0);
-  private Jaguar rightMotor = new Jaguar(1);
+  private static final double kVoltsPerDegreePerSecond = 0.0128;
 
-  private Joystick joy1 = new Joystick(0);
+  private static final int kLeftMotorPort = 0;
+	private static final int kRightMotorPort = 1;
+  private static final int kJoystickPort = 0;
+  
+  private DifferentialDrive m_myRobot
+			= new DifferentialDrive(new Spark(kLeftMotorPort),
+			new Spark(kRightMotorPort));
+	private AnalogGyro m_gyro = new AnalogGyro(kGyroPort);
+	private Joystick m_joystick = new Joystick(kJoystickPort);
+
+ 
 
   private double startTime;
+  public static final ADIS16470_IMU imu = new ADIS16470_IMU();
 
   @Override
   public void robotInit() {
@@ -91,6 +103,11 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
+
+    double turningValue = (kAngleSetpoint - imu.getAngle()) * kP;
+		// Invert the direction of the turn if we are going backwards
+		turningValue = Math.copySign(turningValue, m_joystick.getY());
+		m_myRobot.arcadeDrive(m_joystick.getY(), turningValue);
     
     double speed = -joy1.getRawAxis(1) * 0.6;
     double turn = -joy1.getRawAxis(0) * 0.3;
