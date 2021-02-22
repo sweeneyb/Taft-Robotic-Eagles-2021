@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.Jaguar;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import com.analog.adis16470.frc.ADIS16470_IMU;
+  
 
 /**
  * The VM is configured to automatically run this class, and to call the
